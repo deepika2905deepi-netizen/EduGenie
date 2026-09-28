@@ -5,7 +5,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, field_validator
@@ -101,6 +101,12 @@ class LearnRequest(BaseModel):
 def index(request: Request) -> HTMLResponse:
     """Serve the single-page frontend."""
     return templates.TemplateResponse(request, "index.html")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon() -> FileResponse:
+    """Serve the site favicon (browsers request /favicon.ico automatically)."""
+    return FileResponse(str(BASE_DIR / "static" / "favicon.ico"))
 
 
 @app.get("/health")
